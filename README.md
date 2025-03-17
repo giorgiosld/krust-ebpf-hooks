@@ -41,6 +41,39 @@ cargo build
 sudo ./target/debug/krust-ebpf-hooks-user
 ```
 
+## Project Structure
+
+The repository is organized as follows:
+
+```
+.
+├── Cargo.toml                 # Root workspace configuration
+├── docs/                      # Documentation directory
+│   └── environment-setup.md   # Setup instructions
+├── krust-ebpf-hooks/          # User-space application
+│   ├── build.rs               # Build script for user-space component
+│   ├── Cargo.toml             # User-space dependencies
+│   └── src/
+│       └── main.rs            # User-space application entry point
+├── krust-ebpf-hooks-common/   # Shared code between user and kernel space
+│   ├── Cargo.toml             # Common code dependencies
+│   └── src/
+│       └── lib.rs             # Shared structures and definitions
+└── krust-ebpf-hooks-ebpf/     # eBPF kernel-space component
+    ├── build.rs               # Build script for eBPF program
+    ├── Cargo.toml             # eBPF program dependencies
+    └── src/
+        ├── lib.rs             # Library functions for eBPF component
+        ├── main.rs            # eBPF program entry point
+        ├── tracepoints/       # Tracepoint-based hooks
+        └── utils.rs           # Utility functions for eBPF code
+```
+
+This structure follows the Aya framework's recommended approach for eBPF applications, separating the components into:
+- User-space application (`krust-ebpf-hooks`)
+- Kernel-space eBPF program (`krust-ebpf-hooks-ebpf`)
+- Shared code and structures (`krust-ebpf-hooks-common`)
+
 ## Documentation
 
 For more detailed information, see the documentation in the `docs/` directory:
