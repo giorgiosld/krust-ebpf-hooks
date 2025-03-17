@@ -1,10 +1,10 @@
 # Environment Setup Guide
 
-This document details the setup process for the `krust-ebpf-hooks` development environment.
+This document describes the setup process for the `krust-ebpf-hooks` development environment.
 
 ## Recommended Development Environment
 
-For eBPF development, is Recommended to use a virtual machine with Debian 12 (Bookworm). This provides isolation for kernel-level development and allows for easy system restoration if issues arise.
+For eBPF development, it is recommended to use a virtual machine with Debian 12 (Bookworm). This provides isolation for kernel-level development and allows for easy system restoration if issues arise.
 
 ### Why Debian 12?
 
@@ -26,10 +26,10 @@ eBPF programs run within the kernel context. Programming errors can potentially 
 QEMU with KVM provides near-native performance, which is important for accurate performance measurements when developing eBPF programs.
 
 ```bash
-# Check if your CPU supports virtualization. If output greater than 0, the CPU support hardware virtualization.
+# Check if your CPU supports virtualization. If output is greater than 0, the CPU supports hardware virtualization.
 egrep -c '(vmx|svm)' /proc/cpuinfo
 
-# Check if KVM can be used. If kvm_intel is in the output, the kernel module are loaded.
+# Check if KVM can be used. If kvm_intel is in the output, the kernel modules are loaded.
 lsmod | grep kvm
 
 # Update your system first
@@ -47,7 +47,7 @@ sudo virsh pool-build default
 sudo virsh pool-start default
 sudo virsh pool-autostart default
 
-# Download Debian 12 iso
+# Download Debian 12 ISO 
 wget -O ~/Downloads/vm/debian-12.9.0-amd64-netinst.iso https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.9.0-amd64-netinst.iso
 
 # Create the Debian 12 VM via GUI
@@ -56,10 +56,10 @@ virt-manager
 # - 4GB+ RAM
 # - 2+ CPU cores
 # - 20GB+ disk space
-# During installation uncheck "Debian desktop environment" and "GNOME", select instead "SSH server" and "standard system utilities"
+# During installation uncheck "Debian desktop environment" and "GNOME". Instead select "SSH server" and "standard system utilities"
 
 # After VM creation update the system and install VM guest tools
-# Fresh install comes without sudo and vim, is suggested to install, look online for some references to do that
+# A fresh install does not include sudo and vim. It is recommended to install them manually. You can find instructions online on how to do this
 sudo apt install -y qemu-guest-agent spice-vdagent
 sudo systemctl enable --now qemu-guest-agent
 
@@ -70,8 +70,12 @@ sudo apt install -y build-essential git curl libelf-dev llvm clang cmake
 sudo apt install -y linux-headers-$(uname -r) pkg-config
 
 # Optional: Create a VM snapshot via GUI
-# Optional: For a convenient development setuo SSH access
+# Optional: For a convenient development setup SSH access
 # Optional: Setup the file sharing between Host and Guest
+sudo mkdir -p /mnt/host-share
+sudo mount -t virtiofs hostshare /mnt/host-share
+# To automatically mount the file system during boot, add this entry to /etc/fstab:
+hostshare /mnt/host-share virtiofs defaults,_netdev,x-systemd.automount,x-systemd.device-timeout=10 0 0
 
 # Install Rust toolchain
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -88,7 +92,7 @@ cargo install cargo-generate
 ```
 
 # Verifying the Setup
-To verify that your environment is correctly set up, you can check:
+To verify that your environment is set up correctly, check the following:
 ```bash
 # Verify Rust installation
 rustc --version
@@ -108,7 +112,7 @@ uname -r
 
 # Troubleshooting Common Issues
 ## Issue: openssl-sys
-Due the fresh installation cargo is unable to find the OpenSSL package. 
+After a fresh installation, cargo may be unable to find the OpenSSL package. To fix:
 ```bash
 sudo apt install -y libssl-dev
 ```
